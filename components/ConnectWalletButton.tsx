@@ -1,13 +1,23 @@
 'use client'
 
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { useAppKit } from '@reown/appkit/react'
-import { useAccount, useDisconnect } from 'wagmi'
+import { useAccount } from 'wagmi'
 import { Button } from '@/components/ui/button'
 import { Wallet } from 'lucide-react'
 
 export default function ConnectWalletButton() {
+  const router = useRouter()
   const { open } = useAppKit()
   const { address, isConnected } = useAccount()
+
+  // Redirect to dashboard when wallet connects
+  useEffect(() => {
+    if (isConnected && address) {
+      router.push('/dashboard')
+    }
+  }, [isConnected, address, router])
 
   const shortenAddress = (addr: string) => {
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`
