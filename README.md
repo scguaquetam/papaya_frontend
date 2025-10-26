@@ -77,24 +77,46 @@ No olvidar subir el link del demo
 
 ![Papaya](https://i.ibb.co/CKQgpSfT/payapa-sdf.png)
 
+Papaya connects Apple Pay, PayPal, and crypto so anyone can send PYUSD instantly, even if the recipient doesn’t have a PayPal account.
 
-Papaya connects Apple Pay, PayPal, and crypto so anyone can send PYUSD instantly even if the recipient doesn’t have a PayPal account.
+Built on Web3 rails, Papaya makes money move like messages — no banks, no borders, no delays. And every time you send, you earn cashback and rewards.
 
-Built on web3 rails, Papaya makes money move like messages: no banks, no borders, no delays. And every time you send, you earn cashback and rewards.
+Papaya allows seamless transfers between:
+	•	Apple Pay → PYUSD on-chain → PayPal
+	•	Wallet to wallet (crypto ↔ PYUSD)
+	•	PayPal accounts ↔ smart wallets
 
 Send and receive money worldwide. Pay anyone with Apple Pay. Papaya. Instantly.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Features
+# How it Works
+
+Papaya is built with Next.js, TypeScript, and Reown AppKit, using Hardhat, Pyth Network, and PayPal USD (PYUSD) as the foundation of its Web3 payment architecture.
+
+**Hardhat**: Used for smart contract development, testing, and deployment of our [multi-contract system](https://github.com/JMSBPP/papaya-contracts/tree/feature/pyusd-euler-lifecycle-integration/contracts):
+- PaymentGateway.sol: Core payment routing and settlement logic.
+- ChainPriceOracle.sol: Price feed aggregation and Pyth Network integration.
+- UniswapV3Oracle.sol: Liquidity and secondary price validation layer.
+
+**Pyth Network** Provides real-time on-chain price feeds to validate USD↔crypto↔PYUSD conversions, ensuring fair rates and accurate remittances.
+
+**PayPal USD (PYUSD)** The core settlement token, powering instant and dollar-backed transfers between Apple Pay, PayPal, and Web3 wallets.
+
+It is a dApp created on Next JS, using Apple Pay - Payment Request API, for managing apple pay payments for sending PYUSD to other users.
+It uses also Reown SDK for wallet management, and smart wallet infra, with the capability of using social login.
+
+![HowItWorks](https://i.postimg.cc/7Z9NQpzP/Whats-App-Image-2025-10-15-at-14-50-44.jpg) 
+
+ ## Features
 
 - **Crypto Wallet Integration** - Connect with MetaMask, WalletConnect, and other Web3 wallets using Reown AppKit
 - **Apple Pay Support** - Quick payments with Apple Pay
-- **Multi-Network Support** - Support for Ethereum Mainnet, Arbitrum, Base, and Polygon
+- **Multi-Network Support** - Support for Ethereum Mainnet and Arbitrum
 - **QR Code Payments** - Generate and scan QR codes for easy payments
 - **Real-time Balance Tracking** - Monitor your PYUSD and USD balances
 - **Transaction History** - View your recent payment history
 - **Modern UI** - Beautiful, responsive design with Tailwind CSS and shadcn/ui
-
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -103,25 +125,10 @@ Send and receive money worldwide. Pay anyone with Apple Pay. Papaya. Instantly.
 
 <!--[![Demo Video](Video) -->
 
+<!--Add contracts if possible -->
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p> 
-
-# How it Works
-
-The payment system consists of [four main contracts](https://github.com/JMSBPP/papaya-contracts/tree/feature/pyusd-euler-lifecycle-integration/contracts):
-
-- PaymentGateway: Core payment processing logic
-- Client: User-facing payment interface
-- ChainPriceOracle: Price feed aggregation and validation
-- Uniswapv3Oracle: Uniswap v3 price oracle integration
-
-It is a dApp created on Next JS, using Apple Pay - Payment Request API, for managing apple pay payments for sending PYUSD to other users.
-It uses also Reown SDK for wallet management, and smart wallet infra, with the capability of using social login.
-
-![HowItWorks](https://i.postimg.cc/7Z9NQpzP/Whats-App-Image-2025-10-15-at-14-50-44.jpg) 
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 # Team
 
