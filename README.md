@@ -140,6 +140,7 @@ It uses also Reown SDK for wallet management, and smart wallet infra, with the c
 # Demo
 
 <!--[![Demo Video](Video) -->
+[![Watch the video](https://img.youtube.com/vi/n-7h4TbWbC4/0.jpg)](https://www.youtube.com/watch?v=n-7h4TbWbC4)
 
 <!--Add contracts if possible -->
 
