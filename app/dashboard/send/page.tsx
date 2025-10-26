@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,6 +9,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowLeft, Mail, DollarSign, CreditCard, Wallet, User, Search, Loader2, CheckCircle } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { TokenSelector } from "@/components/TokenSelector"
+import { useAccount, useWriteContract, useWaitForTransactionReceipt, useReadContract } from "wagmi"
+import { parseUnits } from "viem"
+import { CONTRACTS, CLIENT_ABI, ERC20_ABI, PAYMENT_TOKENS } from "@/lib/contracts"
 
 export default function SendMoneyPage() {
   const router = useRouter()
@@ -18,9 +22,25 @@ export default function SendMoneyPage() {
   const [pylinkUsername, setPylinkUsername] = useState("")
   const [amount, setAmount] = useState("")
   const [paymentMethod, setPaymentMethod] = useState<"apple-pay" | "crypto" | null>(null)
+  const [selectedToken, setSelectedToken] = useState<string>(PAYMENT_TOKENS[0].address)
 
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
+  
+  const { address, isConnected } = useAccount()
+  const { data: hash, writeContract, isPending, error: writeError } = useWriteContract()
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash })
+  
+  // Check token allowance for ERC20 tokens
+  const { data: allowance } = useReadContract({
+    address: selectedToken as `0x${string}`,
+    abi: ERC20_ABI,
+    functionName: 'allowance',
+    args: address && selectedToken !== PAYMENT_TOKENS[0].address ? [address, CONTRACTS.CLIENT as `0x${string}`] : undefined,
+    query: {
+      enabled: !!address && selectedToken !== PAYMENT_TOKENS[0].address && paymentMethod === 'crypto',
+    },
+  })
 
   const handleNext = () => {
     if (step === 1 && (email || pylinkUsername)) {
@@ -38,18 +58,123 @@ export default function SendMoneyPage() {
     }
   }
 
-  const processPayment = async () => {
-    setIsProcessing(true)
+  const processPayment = () => {
+    if (paymentMethod === 'crypto' && (!isConnected || !address)) {
+      alert('Please connect your wallet first');
+      return;
+    }
 
-    // Simulate payment processing
-    await new Promise((resolve) => setTimeout(resolve, 2500))
+    if (paymentMethod === 'apple-pay') {
+      // Apple Pay flow
+      setIsProcessing(true);
+      setTimeout(() => {
+        setIsProcessing(false);
+        setShowPaymentModal(false);
+        router.push("/dashboard/success");
+      }, 2500);
+      return;
+    }
 
-    setIsProcessing(false)
-    setShowPaymentModal(false)
+    // Crypto payment flow
+    try {
+      const token = PAYMENT_TOKENS.find(t => t.address === selectedToken);
+      if (!token) {
+        alert('Invalid token selected');
+        return;
+      }
 
-    // Redirect to success page
-    router.push("/dashboard/success")
+      const amountInWei = parseUnits(amount, token.decimals);
+      
+      // Use the connected wallet address as the payee
+      // The connected wallet is both the payer and the payee
+      if (!address) {
+        alert('Wallet not connected');
+        return;
+      }
+      const payeeAddress = address;
+
+      // For ETH payments, send value with transaction
+      if (token.symbol === 'ETH') {
+        console.log('Calling Client.pay() with ETH:', {
+          contract: CONTRACTS.CLIENT,
+          paymentToken: selectedToken,
+          amount: amountInWei.toString(),
+          payee: payeeAddress,
+          connectedWallet: address,
+          recipient: recipientType === 'paypal' ? email : `@${pylinkUsername}`,
+          value: amountInWei.toString()
+        });
+        
+        writeContract({
+          address: CONTRACTS.CLIENT as `0x${string}`,
+          abi: CLIENT_ABI,
+          functionName: 'pay',
+          args: [selectedToken as `0x${string}`, amountInWei, payeeAddress],
+          value: amountInWei,
+        });
+      } else {
+        // For ERC20 tokens, check allowance and approve if needed
+        const currentAllowance = (allowance as bigint) || BigInt(0);
+        
+        if (currentAllowance < amountInWei) {
+          console.log('Approving token spend:', {
+            token: selectedToken,
+            spender: CONTRACTS.CLIENT,
+            amount: amountInWei.toString()
+          });
+          
+          // First approve the token
+          writeContract({
+            address: selectedToken as `0x${string}`,
+            abi: ERC20_ABI,
+            functionName: 'approve',
+            args: [CONTRACTS.CLIENT as `0x${string}`, amountInWei],
+          });
+        } else {
+          console.log('Calling Client.pay() with ERC20:', {
+            contract: CONTRACTS.CLIENT,
+            paymentToken: selectedToken,
+            amount: amountInWei.toString(),
+            payee: payeeAddress,
+            connectedWallet: address,
+            recipient: recipientType === 'paypal' ? email : `@${pylinkUsername}`
+          });
+          
+          // Call pay function with approved tokens
+          writeContract({
+            address: CONTRACTS.CLIENT as `0x${string}`,
+            abi: CLIENT_ABI,
+            functionName: 'pay',
+            args: [selectedToken as `0x${string}`, amountInWei, payeeAddress],
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      alert(`Payment failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   }
+
+  // Watch for transaction success and errors
+  useEffect(() => {
+    if (isSuccess && paymentMethod === 'crypto') {
+      setShowPaymentModal(false);
+      router.push("/dashboard/success");
+    }
+  }, [isSuccess, paymentMethod, router]);
+
+  useEffect(() => {
+    if (writeError) {
+      console.error('Write contract error:', writeError);
+      setIsProcessing(false);
+      alert(`Transaction failed: ${writeError.message}`);
+    }
+  }, [writeError]);
+
+  // Set processing state when transaction is pending or confirming
+  useEffect(() => {
+    setIsProcessing(isPending || isConfirming);
+  }, [isPending, isConfirming]);
 
   const handleBack = () => {
     if (step > 1) {
@@ -338,7 +463,9 @@ export default function SendMoneyPage() {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold">Crypto Wallet</h3>
-                    <p className="text-sm text-muted-foreground">Pay with PYUSD or other crypto</p>
+                    <p className="text-sm text-muted-foreground">
+                      {isConnected ? 'Pay with ETH, DAI, USDT, USDC, or PYUSD' : 'Connect wallet to pay'}
+                    </p>
                   </div>
                   {paymentMethod === "crypto" && (
                     <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
@@ -354,6 +481,17 @@ export default function SendMoneyPage() {
                   )}
                 </div>
               </button>
+
+              {paymentMethod === "crypto" && (
+                <div className="space-y-3 mt-4 p-4 bg-muted rounded-lg">
+                  <h4 className="font-semibold text-sm">Select Payment Token</h4>
+                  {!isConnected ? (
+                    <p className="text-sm text-muted-foreground">Please connect your wallet to continue</p>
+                  ) : (
+                    <TokenSelector selectedToken={selectedToken} onSelectToken={setSelectedToken} />
+                  )}
+                </div>
+              )}
 
               <Button onClick={handleNext} disabled={isNextDisabled()} className="w-full" size="lg">
                 Continue
@@ -426,8 +564,16 @@ export default function SendMoneyPage() {
                   <div className="flex-1">
                     <p className="font-semibold">{paymentMethod === "apple-pay" ? "Apple Pay" : "Crypto Wallet"}</p>
                     <p className="text-sm text-muted-foreground">
-                      {paymentMethod === "apple-pay" ? "Fast and secure" : "Pay with PYUSD"}
+                      {paymentMethod === "apple-pay" 
+                        ? "Fast and secure" 
+                        : `Pay with ${PAYMENT_TOKENS.find(t => t.address === selectedToken)?.symbol}`
+                      }
                     </p>
+                    {paymentMethod === "crypto" && isConnected && address && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Paying from: {address.slice(0, 6)}...{address.slice(-4)}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -507,45 +653,83 @@ export default function SendMoneyPage() {
               </div>
             )}
 
-            {paymentMethod === "crypto" && !isProcessing && (
+            {paymentMethod === "crypto" && !isProcessing && !isPending && !isConfirming && isConnected && (
               <div className="flex flex-col items-center gap-3 py-4">
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
                   <Wallet className="w-8 h-8 text-primary" />
                 </div>
                 <div className="text-center space-y-1">
                   <p className="text-sm font-medium">Wallet Connected</p>
-                  <p className="text-xs text-muted-foreground">0x742d...3f4a</p>
+                  <p className="text-xs text-muted-foreground">
+                    {address?.slice(0, 6)}...{address?.slice(-4)}
+                  </p>
                 </div>
                 <div className="w-full bg-muted p-3 rounded-lg text-sm">
                   <div className="flex justify-between mb-1">
-                    <span className="text-muted-foreground">Available PYUSD</span>
-                    <span className="font-medium">$1,234.56</span>
+                    <span className="text-muted-foreground">Payment Token</span>
+                    <span className="font-medium">
+                      {PAYMENT_TOKENS.find(t => t.address === selectedToken)?.symbol}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Gas Fee (est.)</span>
-                    <span className="font-medium">$0.12</span>
+                    <span className="font-medium">~$2-5</span>
                   </div>
                 </div>
               </div>
             )}
 
             {/* Processing State */}
-            {isProcessing && (
+            {(isPending || isConfirming) && (
+              <div className="flex flex-col items-center gap-3 py-8">
+                <Loader2 className="w-12 h-12 text-primary animate-spin" />
+                <p className="text-sm font-medium">
+                  {isPending ? 'Waiting for confirmation...' : 'Confirming transaction...'}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {isPending ? 'Please check your wallet and approve the transaction' : 'Transaction is being confirmed on the blockchain'}
+                </p>
+                {hash && (
+                  <a
+                    href={`https://etherscan.io/tx/${hash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-primary hover:underline"
+                  >
+                    View on Etherscan
+                  </a>
+                )}
+              </div>
+            )}
+
+            {/* Show payment details when not processing */}
+            {isProcessing && !isPending && !isConfirming && (
               <div className="flex flex-col items-center gap-3 py-8">
                 <Loader2 className="w-12 h-12 text-primary animate-spin" />
                 <p className="text-sm font-medium">Processing payment...</p>
-                <p className="text-xs text-muted-foreground">Please wait while we confirm your transaction</p>
               </div>
             )}
           </div>
 
           {/* Action Buttons */}
-          {!isProcessing && (
+          {!isPending && !isConfirming && (
             <div className="flex gap-3">
-              <Button variant="outline" onClick={() => setShowPaymentModal(false)} className="flex-1">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setShowPaymentModal(false);
+                  setIsProcessing(false);
+                }} 
+                className="flex-1"
+                disabled={isProcessing}
+              >
                 Cancel
               </Button>
-              <Button onClick={processPayment} className="flex-1">
+              <Button 
+                onClick={processPayment} 
+                className="flex-1"
+                disabled={(paymentMethod === 'crypto' && !isConnected) || isProcessing}
+              >
                 {paymentMethod === "apple-pay" ? "Pay with Apple Pay" : "Confirm Transaction"}
               </Button>
             </div>

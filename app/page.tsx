@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { WalletButton } from "@/components/WalletButton"
 import { Check } from "lucide-react"
 import ConnectWalletButton from "@/components/ConnectWalletButton"
 
