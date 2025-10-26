@@ -3,16 +3,41 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowUpRight, QrCode, TrendingUp } from "lucide-react"
+import { ArrowUpRight, QrCode } from "lucide-react"
 import ApplePayButton from "@/components/Applepay/ApplePayButton"
 import WalletInfo from "@/components/WalletInfo"
 import ProtectedRoute from "@/components/ProtectedRoute"
 import { useState } from "react"
-import { useAccount } from "wagmi"
+import { useAccount, useReadContract, useBalance } from "wagmi"
+import { PYUSD_ADDRESS } from "@/config"
+import { erc20Abi } from "@/config/abis/erc20"
+import { formatUnits } from "viem"
 
 export default function DashboardPage() {
   const [paymentStatus, setPaymentStatus] = useState<string>('');
-  const { address, isConnected } = useAccount();
+  const { address } = useAccount();
+
+  const { data: pyusdBalance } = useReadContract({
+    address: PYUSD_ADDRESS,
+    abi: erc20Abi,
+    functionName: 'balanceOf',
+    args: address ? [address] : undefined,
+    query: {
+      enabled: !!address,
+    }
+  })
+
+  const { data: ethBalance } = useBalance({
+    address: address,
+  })
+
+  const formattedPyusdBalance = pyusdBalance 
+    ? parseFloat(formatUnits(pyusdBalance as bigint, 6)).toFixed(2)
+    : '0.00'
+
+  const formattedEthBalance = ethBalance
+    ? parseFloat(ethBalance.formatted).toFixed(4)
+    : '0.0000'
 
 
   const handlePaymentSuccess = (response: PaymentResponse) => {
@@ -28,21 +53,6 @@ export default function DashboardPage() {
   return (
     <ProtectedRoute requireWallet={true}>
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      {/* <header className="border-b border-border bg-card">
-        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-xl font-bold">PyLink</h1>
-          <div className="flex items-center gap-2">
-            {isConnected && address && (
-              <div className="text-xs text-muted-foreground hidden sm:block">
-                {address.slice(0, 6)}...{address.slice(-4)}
-              </div>
-            )}
-            <WalletButton />
-          </div>
-        </div>
-      </header> */}
-
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
         {/* Wallet Info */}
         <WalletInfo />
@@ -55,26 +65,30 @@ export default function DashboardPage() {
               <CardDescription className="text-primary-foreground/90 text-xs font-medium">
                 PYUSD Balance
               </CardDescription>
-              <CardTitle className="text-2xl font-bold">$1,234.56</CardTitle>
+              <CardTitle className="text-2xl font-bold">
+                {pyusdBalance ? `$${formattedPyusdBalance}` : 'Loading...'}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-1 text-xs font-medium">
-                <TrendingUp className="w-3 h-3" />
-                <span>+$25.20</span>
+                <span className="text-primary-foreground/70">Sepolia Testnet</span>
               </div>
             </CardContent>
           </Card>
 
-          {/* USD Balance */}
+          {/* ETH Balance */}
           <Card className="bg-accent text-accent-foreground border-0">
             <CardHeader className="pb-2">
-              <CardDescription className="text-accent-foreground/90 text-xs font-medium">USD Balance</CardDescription>
-              <CardTitle className="text-2xl font-bold">$856.44</CardTitle>
+              <CardDescription className="text-accent-foreground/90 text-xs font-medium">
+                ETH Balance
+              </CardDescription>
+              <CardTitle className="text-2xl font-bold">
+                {ethBalance ? `${formattedEthBalance} ${ethBalance.symbol}` : 'Loading...'}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-1 text-xs font-medium">
-                <TrendingUp className="w-3 h-3" />
-                <span>+$20.00</span>
+                <span className="text-accent-foreground/70">Native Token</span>
               </div>
             </CardContent>
           </Card>

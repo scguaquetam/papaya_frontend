@@ -88,15 +88,6 @@ export default function WalletInfo() {
           </div>
         </div>
 
-        {balance && (
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-muted-foreground">Balance</p>
-            <p className="text-2xl font-bold">
-              {parseFloat(balance.formatted).toFixed(4)} {balance.symbol}
-            </p>
-          </div>
-        )}
-
         <div className="pt-2">
           <Button
             variant="outline"
