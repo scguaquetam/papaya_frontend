@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Check } from "lucide-react"
@@ -54,15 +56,9 @@ export default function LandingPage() {
               Get Started with Apple Pay
             </Button>
           </Link>
-          <Link href="/dashboard" className="block">
-            <Button
-              size="lg"
-              variant="outline"
-              className="w-full border-primary text-primary hover:bg-primary/5 bg-transparent"
-            >
-              Connect Crypto Wallet
-            </Button>
-          </Link>
+          <div className="w-full">
+            <appkit-button />
+          </div>
         </div>
 
         {/* Footer Text */}

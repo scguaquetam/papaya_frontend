@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowUpRight, QrCode, TrendingUp } from "lucide-react"
 import ApplePayButton from "@/components/Applepay/ApplePayButton"
+import WalletInfo from "@/components/WalletInfo"
 import { useState } from "react"
 
 export default function DashboardPage() {
@@ -41,6 +42,9 @@ export default function DashboardPage() {
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+        {/* Wallet Info */}
+        <WalletInfo />
+
         {/* Balance Card */}
         <div className="grid grid-cols-2 gap-3">
           {/* PYUSD Balance */}
