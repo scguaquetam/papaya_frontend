@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowUpRight, QrCode, TrendingUp } from "lucide-react"
 import ApplePayButton from "@/components/Applepay/ApplePayButton"
-import { WalletButton } from "@/components/WalletButton"
+import WalletInfo from "@/components/WalletInfo"
 import { useState } from "react"
 import { useAccount } from "wagmi"
 
@@ -27,7 +27,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-card">
+      {/* <header className="border-b border-border bg-card">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-xl font-bold">PyLink</h1>
           <div className="flex items-center gap-2">
@@ -39,9 +39,12 @@ export default function DashboardPage() {
             <WalletButton />
           </div>
         </div>
-      </header>
+      </header> */}
 
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+        {/* Wallet Info */}
+        <WalletInfo />
+
         {/* Balance Card */}
         <div className="grid grid-cols-2 gap-3">
           {/* PYUSD Balance */}

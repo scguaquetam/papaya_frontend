@@ -1,7 +1,10 @@
+"use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { WalletButton } from "@/components/WalletButton"
 import { Check } from "lucide-react"
+import ConnectWalletButton from "@/components/ConnectWalletButton"
 
 export default function LandingPage() {
   return (
@@ -55,7 +58,7 @@ export default function LandingPage() {
               Get Started with Apple Pay
             </Button>
           </Link>
-          <WalletButton />
+          <ConnectWalletButton />
         </div>
 
         {/* Footer Text */}
