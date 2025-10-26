@@ -94,7 +94,7 @@ Send and receive money worldwide. Pay anyone with Apple Pay. Papaya. Instantly.
 
 Papaya is built with Next.js, TypeScript, and Reown AppKit, using Hardhat, Pyth Network, and PayPal USD (PYUSD) as the foundation of its Web3 payment architecture.
 
-**Hardhat**: Used for smart contract development, testing, and deployment of our [multi-contract system](https://github.com/JMSBPP/papaya-contracts/tree/feature/pyusd-euler-lifecycle-integration/contracts):
+
 - PaymentGateway.sol: Core payment routing and settlement logic.
 - ChainPriceOracle.sol: Price feed aggregation and Pyth Network integration.
 - UniswapV3Oracle.sol: Liquidity and secondary price validation layer.
