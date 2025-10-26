@@ -8,12 +8,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ArrowLeft, QrCode, Scan, Download, Share2 } from "lucide-react"
+import ProtectedRoute from "@/components/ProtectedRoute"
 
 export default function QRPaymentPage() {
   const [amount, setAmount] = useState("")
   const [note, setNote] = useState("")
 
   return (
+    <ProtectedRoute requireWallet={true}>
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border bg-card">
@@ -221,5 +223,6 @@ export default function QRPaymentPage() {
         </Tabs>
       </main>
     </div>
+    </ProtectedRoute>
   )
 }

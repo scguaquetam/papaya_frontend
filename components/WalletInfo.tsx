@@ -18,7 +18,7 @@ export default function WalletInfo() {
         <CardContent className="pt-6 pb-6 text-center">
           <Wallet className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
           <p className="text-sm text-muted-foreground mb-3">
-            No hay wallet conectada
+            No wallet connected
           </p>
           <appkit-button />
         </CardContent>
@@ -64,7 +64,7 @@ export default function WalletInfo() {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <p className="text-sm font-medium text-muted-foreground">Dirección</p>
+          <p className="text-sm font-medium text-muted-foreground">Address</p>
           <div className="flex items-center gap-2">
             <code className="flex-1 text-sm bg-muted px-3 py-2 rounded-md font-mono">
               {address && shortenAddress(address)}
@@ -73,7 +73,7 @@ export default function WalletInfo() {
               variant="outline"
               size="icon"
               onClick={copyAddress}
-              title="Copiar dirección"
+              title="Copy address"
             >
               <Copy className="w-4 h-4" />
             </Button>
@@ -81,7 +81,7 @@ export default function WalletInfo() {
               variant="outline"
               size="icon"
               onClick={openExplorer}
-              title="Ver en explorador"
+              title="View in explorer"
             >
               <ExternalLink className="w-4 h-4" />
             </Button>

@@ -1,10 +1,14 @@
+"use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { CheckCircle2, Home, ArrowUpRight } from "lucide-react"
+import ProtectedRoute from "@/components/ProtectedRoute"
 
 export default function SuccessPage() {
   return (
+    <ProtectedRoute requireWallet={true}>
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="max-w-md w-full space-y-6">
         {/* Success Icon */}
@@ -85,5 +89,6 @@ export default function SuccessPage() {
         </p>
       </div>
     </div>
+    </ProtectedRoute>
   )
 }

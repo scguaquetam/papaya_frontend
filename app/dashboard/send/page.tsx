@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowLeft, Mail, DollarSign, CreditCard, Wallet, User, Search, Loader2, CheckCircle } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import ProtectedRoute from "@/components/ProtectedRoute"
 
 export default function SendMoneyPage() {
   const router = useRouter()
@@ -82,6 +83,7 @@ export default function SendMoneyPage() {
   }
 
   return (
+    <ProtectedRoute requireWallet={true}>
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border bg-card">
@@ -553,5 +555,6 @@ export default function SendMoneyPage() {
         </DialogContent>
       </Dialog>
     </div>
+    </ProtectedRoute>
   )
 }

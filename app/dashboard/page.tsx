@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowUpRight, QrCode, TrendingUp } from "lucide-react"
 import ApplePayButton from "@/components/Applepay/ApplePayButton"
 import WalletInfo from "@/components/WalletInfo"
+import ProtectedRoute from "@/components/ProtectedRoute"
 import { useState } from "react"
 
 export default function DashboardPage() {
@@ -23,6 +24,7 @@ export default function DashboardPage() {
   };
 
   return (
+    <ProtectedRoute requireWallet={true}>
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b border-border bg-card">
@@ -178,5 +180,6 @@ export default function DashboardPage() {
         </Card> */}
       </main>
     </div>
+    </ProtectedRoute>
   )
 }

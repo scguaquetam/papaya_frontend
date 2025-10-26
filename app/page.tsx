@@ -1,17 +1,15 @@
 "use client"
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
 import { Check } from "lucide-react"
 import ConnectWalletButton from "@/components/ConnectWalletButton"
+import ProtectedRoute from "@/components/ProtectedRoute"
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-background">
+    <ProtectedRoute requireWallet={false}>
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-background">
       <div className="w-full max-w-md mx-auto space-y-8">
-        {/* Hero Section */}
         <div className="text-center space-y-4">
-          {/* App Icon */}
           <div className="flex justify-center mb-6">
             <div className="w-24 h-24 rounded-full bg-primary flex items-center justify-center">
               <svg className="w-12 h-12 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -25,14 +23,12 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Title and Subtitle */}
-          <h1 className="text-4xl font-bold tracking-tight text-balance">Welcome to PyLink</h1>
+          <h1 className="text-4xl font-bold tracking-tight text-balance">Welcome to Papaya</h1>
           <p className="text-base text-muted-foreground leading-relaxed text-pretty">
             Send money to any PayPal account worldwide, instantly. No PayPal account needed.
           </p>
         </div>
 
-        {/* Feature List */}
         <div className="space-y-3">
           {[
             "Pay with Apple Pay or Crypto",
@@ -50,19 +46,13 @@ export default function LandingPage() {
           ))}
         </div>
 
-        {/* CTA Buttons */}
         <div className="space-y-3 pt-4">
-          <Link href="/dashboard" className="block">
-            <Button size="lg" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium">
-              Get Started with Apple Pay
-            </Button>
-          </Link>
           <ConnectWalletButton />
         </div>
 
-        {/* Footer Text */}
         <p className="text-xs text-center text-muted-foreground">Powered by PYUSD • Secured by blockchain</p>
       </div>
     </div>
+    </ProtectedRoute>
   )
 }

@@ -8,7 +8,6 @@ import { Wallet } from 'lucide-react'
 export default function ConnectWalletButton() {
   const { open } = useAppKit()
   const { address, isConnected } = useAccount()
-  const { disconnect } = useDisconnect()
 
   const shortenAddress = (addr: string) => {
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`
@@ -36,7 +35,7 @@ export default function ConnectWalletButton() {
       onClick={() => open()}
     >
       <Wallet className="w-5 h-5 mr-2" />
-      Connect Crypto Wallet
+      Login with Social or Wallet
     </Button>
   )
 }
