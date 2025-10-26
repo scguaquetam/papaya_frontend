@@ -117,16 +117,6 @@ export default function DashboardPage() {
             </Button>
           </Link>
         </div>
-        <div className="grid grid-cols-1 gap-3">
-          <ApplePayButton
-            amount="29.99"
-            currencyCode="USD"
-            countryCode="US"
-            merchantName="PayPayer"
-            onSuccess={handlePaymentSuccess}
-            onError={handlePaymentError}
-          />
-        </div>
 
         {/* Recent Transactions */}
         <Card>
