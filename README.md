@@ -120,6 +120,22 @@ It uses also Reown SDK for wallet management, and smart wallet infra, with the c
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Contracts
+## Deployed Contracts (Sepolia)
+
+| Contract | Address | SepoliaScan |
+|----------|---------|-------------|
+| UniswapV3Oracle | TBD | Check transactions |
+| ChainPriceOracle | TBD | Check transactions |
+| PaymentGateway | 0x3abCA976AdF6dEa7Dd469e711882aE625DEF89C9 | [View on SepoliaScan](https://sepolia.etherscan.io/address/0x3abCA976AdF6dEa7Dd469e711882aE625DEF89C9) |
+| Client | 0xf256E506c9267A7a2B7E0B4a6775c6943B42994F | [View on SepoliaScan](https://sepolia.etherscan.io/address/0xf256E506c9267A7a2B7E0B4a6775c6943B42994F) |
+
+> For crypto payments users can pay with any ERC20 token that has a Uniswap V3 pair with USDC.
+- The system leverages Pyth oracles to get real-time USD quotes for the payment tokens, ensuring fair pricing.
+
+- Payment amounts are automatically converted to pyUSD and securely stored in an escrow vault powered by Euler Vault Kit. 
+- The intended receiver—a PayPal on-chain API party—can subsequently claim these funds from the escrow vault.
+
 
 # Demo
 
