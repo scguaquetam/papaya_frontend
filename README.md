@@ -110,15 +110,20 @@ Send and receive money worldwide. Pay anyone with Apple Pay. Papaya. Instantly.
 
 # How it Works
 
+The payment system consists of [four main contracts](https://github.com/JMSBPP/papaya-contracts/tree/feature/pyusd-euler-lifecycle-integration/contracts):
+
+- PaymentGateway: Core payment processing logic
+- Client: User-facing payment interface
+- ChainPriceOracle: Price feed aggregation and validation
+- Uniswapv3Oracle: Uniswap v3 price oracle integration
+
+It is a dApp created on Next JS, using Apple Pay - Payment Request API, for managing apple pay payments for sending PYUSD to other users.
+It uses also Reown SDK for wallet management, and smart wallet infra, with the capability of using social login.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-<!-- CONTACT -->
-
-
 # Team
-
 
 Sebastian Guaqueta ([@scguaquetam](https://twitter.com/scguaquetam)): Sr. Software Engineer at Rootstock , collaborator at [WTF Academy Contributor](https://twitter.com/WTFAcademy_).
 <br />
