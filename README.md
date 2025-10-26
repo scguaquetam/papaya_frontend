@@ -1,18 +1,143 @@
-# Papaya - Send money to PayPal with Crypto 💸
 
-Papaya is a Next.js application that allows users to send money to any PayPal account worldwide using cryptocurrency or Apple Pay. Built for EthOnline 2025 Hackathon.
+<!-- PROJECT INTRO -->
 
-## ✨ Features
+<!-- Notas:
+No olvidar subir el link del demo 
+ -->
+ <a name="readme-top"></a>
 
-- 🔐 **Crypto Wallet Integration** - Connect with MetaMask, WalletConnect, and other Web3 wallets using Reown AppKit
-- 🍎 **Apple Pay Support** - Quick payments with Apple Pay
-- 💰 **Multi-Network Support** - Support for Ethereum Mainnet, Arbitrum, Base, and Polygon
-- 📱 **QR Code Payments** - Generate and scan QR codes for easy payments
-- 🔄 **Real-time Balance Tracking** - Monitor your PYUSD and USD balances
-- 📊 **Transaction History** - View your recent payment history
-- 🎨 **Modern UI** - Beautiful, responsive design with Tailwind CSS and shadcn/ui
+<div align="center">
 
-## 🚀 Getting Started
+[![Contributors][contributors-shield]][contributors-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+
+</div>
+
+<br />
+<div align="center">
+  <a href="https://github.com/scguaquetam/papaya_frontend">
+    <img src="https://i.ibb.co/CKQgpSfT/payapa-sdf.png">
+  </a>
+
+ <h3 align="center">Send money to PayPal with Crypto.</h3>
+
+ <h4 align="center">Papaya is and application that allows users to send money to any PayPal account worldwide using cryptocurrency or Apple Pay. Built for EthGlobalOnline 2025 Hackathon.</h4>
+
+  <p align="center">
+
+  [EthGlobal Online 2025](https://ethglobal.com/events/ethonline2025)
+
+   <br />
+    <a href="https://github.com/scguaquetam/papaya_frontend"><strong>Explore the docs »</strong></a>
+    <br />
+    <a href="https://papaya-frontend-ten.vercel.app/">View Demo</a>
+    ·
+    <a href="https://github.com/scguaquetam/papaya_frontend">Report Bug</a>
+    ·
+    <a href="https://github.com/scguaquetam/papaya_frontend">Request Feature</a>
+  </p>
+</div>
+
+<br />
+
+<!-- Papaya CODEBASE -->
+
+<div align="center">
+  <h2> Papaya Codebase</h2>
+  
+  <a href="https://github.com/scguaquetam/papaya_frontend">
+    <img src="https://img.shields.io/badge/Frontend-App%20-FF7A00?style=for-the-badge&logo=github" alt="Frontend Repository">
+  </a>
+  <a href="https://github.com/JMSBPP/papaya-contracts">
+    <img src="https://img.shields.io/badge/Backend-Contracts%20-FF7A00?style=for-the-badge&logo=github" alt="Backend Repository">
+  </a>
+</div>
+
+<br />
+
+<!-- TABLE OF CONTENTS -->
+
+# Table of Contents 
+
+1. [About de Project](#about-the-project)
+2. [Demo](#demo)
+3. [How it works](#how-it-works)
+4. [Team](#team)
+5. [Installation](#installation)
+
+<br />
+
+
+<!-- ABOUT THE PROJECT -->
+
+# About The Project
+
+
+<br />
+
+
+![Papaya](https://i.ibb.co/CKQgpSfT/payapa-sdf.png)
+
+
+Papaya connects Apple Pay, PayPal, and crypto so anyone can send PYUSD instantly even if the recipient doesn’t have a PayPal account.
+
+Built on web3 rails, Papaya makes money move like messages: no banks, no borders, no delays. And every time you send, you earn cashback and rewards.
+
+Send and receive money worldwide. Pay anyone with Apple Pay. Papaya. Instantly.
+
+
+## Features
+
+- **Crypto Wallet Integration** - Connect with MetaMask, WalletConnect, and other Web3 wallets using Reown AppKit
+- **Apple Pay Support** - Quick payments with Apple Pay
+- **Multi-Network Support** - Support for Ethereum Mainnet, Arbitrum, Base, and Polygon
+- **QR Code Payments** - Generate and scan QR codes for easy payments
+- **Real-time Balance Tracking** - Monitor your PYUSD and USD balances
+- **Transaction History** - View your recent payment history
+- **Modern UI** - Beautiful, responsive design with Tailwind CSS and shadcn/ui
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+# Demo
+
+<!--[![Demo Video](Video) -->
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p> 
+
+# How it Works
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+<!-- CONTACT -->
+
+
+# Team
+
+
+Sebastian Guaqueta ([@scguaquetam](https://twitter.com/scguaquetam)): Sr. Software Engineer at Rootstock , collaborator at [WTF Academy Contributor](https://twitter.com/WTFAcademy_).
+<br />
+
+Juan Serrano ([@juanmiguel53475](https://x.com/juanmiguel53475)): Solidity Dev. EVM-based DEX AMM protocol Hooks/Plugins designs and implementations.
+<br />
+
+Gitmel Gutierrez ([@whynotgit](https://twitter.com/whynotgit)): Product Designer.
+<br />
+
+Angela O ([@ocandocrypto](https://twitter.com/ocandocrypto)): UF Dev Community Manager.
+<br />
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- INstallation -->
+
+## Installation 
 
 ### Prerequisites
 
@@ -44,7 +169,7 @@ npm run dev
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 🔧 Configuration
+## Configuration
 
 ### Reown AppKit Setup
 
@@ -65,7 +190,7 @@ The application supports the following networks:
 
 You can modify the supported networks in `config/index.tsx`.
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 papaya_frontend_applepay/
@@ -89,7 +214,7 @@ papaya_frontend_applepay/
 └── public/                  # Static assets
 ```
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 - **Next.js 16** - React framework with Turbopack
 - **React 19** - UI library
@@ -102,7 +227,7 @@ papaya_frontend_applepay/
 - **shadcn/ui** - UI component library
 - **Lucide React** - Icons
 
-## 📱 Usage Examples
+## Usage Examples
 
 ### Connect a Wallet
 
@@ -120,14 +245,14 @@ The `WalletInfo` component shows:
 
 Navigate to `/dashboard/send` to send money to a PayPal account using your connected wallet.
 
-## 🔒 Security Notes
+## Security Notes
 
 - Never commit your `.env.local` file
 - Always verify transaction details before confirming
 - Use secure networks when making transactions
 - Keep your wallet's seed phrase safe and never share it
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Build Errors
 
@@ -144,23 +269,39 @@ npm run build
 2. Check that your wallet is connected to a supported network
 3. Clear your browser cache and try again
 
-## 📚 Learn More
+## Learn More
 
 - [Reown AppKit Documentation](https://docs.reown.com/appkit/next/core/installation)
 - [Wagmi Documentation](https://wagmi.sh)
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Viem Documentation](https://viem.sh)
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📄 License
+## License
 
 This project is built for EthOnline 2025 Hackathon.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Built with [Reown AppKit](https://reown.com)
 - UI components from [shadcn/ui](https://ui.shadcn.com)
 - Powered by PYUSD on the blockchain
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- MARKDOWN LINKS -->
+
+[contributors-shield]: https://img.shields.io/github/contributors/OWL-lang-org/owl-miniapp.svg?style=for-the-badge&color=FF7A00
+
+[contributors-url]: https://github.com/scguaquetam/papaya_frontend/graphs/contributors
+
+[stars-shield]: https://img.shields.io/github/stars/OWL-lang-org/owl-miniapp.svg?style=for-the-badge&color=white
+
+[stars-url]: https://github.com/scguaquetam/papaya_frontend/stargazers
+
+[issues-shield]: https://img.shields.io/github/issues/OWL-lang-org/owl-miniapp.svg?style=for-the-badge&color=FF7A00
+
+[issues-url]: https://github.com/scguaquetam/papaya_frontend/issues
