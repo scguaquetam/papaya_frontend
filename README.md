@@ -20,9 +20,7 @@ No olvidar subir el link del demo
     <img src="https://i.ibb.co/CKQgpSfT/payapa-sdf.png">
   </a>
 
- <h3 align="center">Send money to PayPal with Crypto.</h3>
-
- <h4 align="center">Papaya is and application that allows users to send money to any PayPal account worldwide using cryptocurrency or Apple Pay. Built for EthGlobalOnline 2025 Hackathon.</h4>
+ <h3 align="center">Send and receive money worldwide. Pay anyone with Apple Pay. Papaya. Instantly.</h3>
 
   <p align="center">
 
@@ -119,6 +117,8 @@ The payment system consists of [four main contracts](https://github.com/JMSBPP/p
 
 It is a dApp created on Next JS, using Apple Pay - Payment Request API, for managing apple pay payments for sending PYUSD to other users.
 It uses also Reown SDK for wallet management, and smart wallet infra, with the capability of using social login.
+
+![Papaya](https://i.ibb.co/BHngtG4F/Screenshot-2025-10-26-at-9-02-40-AM.png) 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
