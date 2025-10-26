@@ -11,6 +11,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import ProtectedRoute from "@/components/ProtectedRoute"
 import { TokenSelector } from "@/components/TokenSelector"
+import ApplePayChecker from "@/components/Applepay/ApplePayChecker"
+import ApplePayButton from "@/components/Applepay/ApplePayButton"
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useReadContract } from "wagmi"
 import { parseUnits } from "viem"
 import { CONTRACTS, CLIENT_ABI, ERC20_ABI, PAYMENT_TOKENS } from "@/lib/contracts"
@@ -211,7 +213,14 @@ export default function SendMoneyPage() {
     if (!amount) return "0.00"
     return recipientType === "paypal"
       ? (Number.parseFloat(amount) * 1.02).toFixed(2)
-      : Number.parseFloat(amount).toFixed(2)
+      : (Number.parseFloat(amount) * 1.001).toFixed(2)
+  }
+
+  const getFeeAmount = () => {
+    if (!amount) return "0.00"
+    return recipientType === "paypal"
+      ? (Number.parseFloat(amount) * 0.02).toFixed(2)
+      : (Number.parseFloat(amount) * 0.001).toFixed(2)
   }
 
   return (
@@ -440,10 +449,10 @@ export default function SendMoneyPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">
-                      Fee {recipientType === "paypal" ? "(2%)" : "(0% - Wallet)"}
+                      Fee {recipientType === "paypal" ? "(2%)" : "(0.1%)"}
                     </span>
                     <span className="font-medium">
-                      ${recipientType === "paypal" ? (Number.parseFloat(amount) * 0.02).toFixed(2) : "0.00"}
+                      ${getFeeAmount()}
                     </span>
                   </div>
                   <div className="flex justify-between border-t border-border pt-2">
@@ -451,7 +460,7 @@ export default function SendMoneyPage() {
                     <span className="font-semibold">${getTotalAmount()}</span>
                   </div>
                   {recipientType === "wallet" && (
-                    <p className="text-xs text-accent pt-2">No fees for wallet-to-wallet transfers!</p>
+                    <p className="text-xs text-accent pt-2">Low 0.1% network fee for wallet transfers</p>
                   )}
                 </div>
               )}
@@ -474,36 +483,52 @@ export default function SendMoneyPage() {
               <CardDescription>Select how you'd like to pay for this transaction</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <button
-                onClick={() => setPaymentMethod("apple-pay")}
-                className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
-                  paymentMethod === "apple-pay"
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:border-primary/50"
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                    <CreditCard className="w-6 h-6" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold">Apple Pay</h3>
-                    <p className="text-sm text-muted-foreground">Fast and secure payment</p>
-                  </div>
-                  {paymentMethod === "apple-pay" && (
-                    <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                      <svg
-                        className="w-4 h-4 text-primary-foreground"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+              <ApplePayChecker>
+                {(isApplePayAvailable) => (
+                  <>
+                    {isApplePayAvailable && (
+                      <button
+                        onClick={() => setPaymentMethod("apple-pay")}
+                        className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
+                          paymentMethod === "apple-pay"
+                            ? "border-primary bg-primary/5"
+                            : "border-border hover:border-primary/50"
+                        }`}
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                  )}
-                </div>
-              </button>
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                            <svg
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path d="M4.5 9.5c0-1.5 1-2.5 2.5-2.5 1 0 1.5.5 2 1 .5.5 1 1 2 1s1.5-.5 2-1c.5-.5 1-1 2-1 1.5 0 2.5 1 2.5 2.5 0 2-1.5 3.5-3.5 5.5-1 1-1.5 1.5-2 1.5s-1-.5-2-1.5c-2-2-3.5-3.5-3.5-5.5z" />
+                            </svg>
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-semibold">Apple Pay</h3>
+                            <p className="text-sm text-muted-foreground">Fast and secure payment</p>
+                          </div>
+                          {paymentMethod === "apple-pay" && (
+                            <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
+                              <svg
+                                className="w-4 h-4 text-primary-foreground"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+                      </button>
+                    )}
+                  </>
+                )}
+              </ApplePayChecker>
 
               <button
                 onClick={() => setPaymentMethod("crypto")}
@@ -591,10 +616,10 @@ export default function SendMoneyPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">
-                      Transaction fee {recipientType === "paypal" ? "(2%)" : "(0%)"}
+                      Transaction fee {recipientType === "paypal" ? "(2%)" : "(0.1%)"}
                     </span>
                     <span className="font-semibold">
-                      ${recipientType === "paypal" ? (Number.parseFloat(amount) * 0.02).toFixed(2) : "0.00"}
+                      ${getFeeAmount()}
                     </span>
                   </div>
                   <div className="flex justify-between pt-3 border-t border-border">
@@ -697,13 +722,23 @@ export default function SendMoneyPage() {
 
             {/* Payment Method Specific UI */}
             {paymentMethod === "apple-pay" && !isProcessing && (
-              <div className="flex flex-col items-center gap-3 py-4">
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                  <CreditCard className="w-8 h-8 text-primary" />
-                </div>
-                <p className="text-sm text-center text-muted-foreground">
-                  Double-click the side button to pay with Apple Pay
-                </p>
+              <div className="flex flex-col items-center gap-4 py-4">
+                <ApplePayButton
+                  amount={getTotalAmount()}
+                  currencyCode="USD"
+                  countryCode="US"
+                  merchantName="Papaya"
+                  onSuccess={(response) => {
+                    console.log('Apple Pay payment successful:', response);
+                    setShowPaymentModal(false);
+                    router.push("/dashboard/success");
+                  }}
+                  onError={(error) => {
+                    console.error('Apple Pay payment error:', error);
+                    alert(`Payment failed: ${error.message}`);
+                    setIsProcessing(false);
+                  }}
+                />
               </div>
             )}
 
@@ -727,7 +762,7 @@ export default function SendMoneyPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Gas Fee (est.)</span>
-                    <span className="font-medium">~$2-5</span>
+                    <span className="">~$0.5 - $1</span>
                   </div>
                 </div>
               </div>
@@ -779,13 +814,16 @@ export default function SendMoneyPage() {
               >
                 Cancel
               </Button>
-              <Button 
-                onClick={processPayment} 
-                className="flex-1"
-                disabled={(paymentMethod === 'crypto' && !isConnected) || isProcessing}
-              >
-                {paymentMethod === "apple-pay" ? "Pay with Apple Pay" : "Confirm Transaction"}
-              </Button>
+              {/* Only show confirm button for crypto payments, Apple Pay has its own button */}
+              {paymentMethod === "crypto" && (
+                <Button 
+                  onClick={processPayment} 
+                  className="flex-1"
+                  disabled={!isConnected || isProcessing}
+                >
+                  Confirm Transaction
+                </Button>
+              )}
             </div>
           )}
         </DialogContent>

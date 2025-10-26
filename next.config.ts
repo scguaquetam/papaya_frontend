@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
   },
   // Empty turbopack config to silence the warning
   turbopack: {},
+  devIndicators: false
 };
 
 export default nextConfig;
