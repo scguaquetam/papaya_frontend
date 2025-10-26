@@ -3,8 +3,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowUpRight, QrCode } from "lucide-react"
-import ApplePayButton from "@/components/Applepay/ApplePayButton"
+import { ArrowUpRight, ArrowDownLeft } from "lucide-react"
 import WalletInfo from "@/components/WalletInfo"
 import ProtectedRoute from "@/components/ProtectedRoute"
 import { useState } from "react"
@@ -14,7 +13,6 @@ import { erc20Abi } from "@/config/abis/erc20"
 import { formatUnits } from "viem"
 
 export default function DashboardPage() {
-  const [paymentStatus, setPaymentStatus] = useState<string>('');
   const { address } = useAccount();
 
   const { data: pyusdBalance } = useReadContract({
@@ -38,17 +36,6 @@ export default function DashboardPage() {
   const formattedEthBalance = ethBalance
     ? parseFloat(ethBalance.formatted).toFixed(4)
     : '0.0000'
-
-
-  const handlePaymentSuccess = (response: PaymentResponse) => {
-    console.log('Payment successful:', response);
-    setPaymentStatus('✅ Payment completed successfully!');
-  };
-
-  const handlePaymentError = (error: Error) => {
-    console.error('Payment error:', error);
-    setPaymentStatus(`❌ Error: ${error.message}`);
-  };
 
   return (
     <ProtectedRoute requireWallet={true}>
@@ -106,14 +93,14 @@ export default function DashboardPage() {
               <span className="font-medium">Send Money</span>
             </Button>
           </Link>
-          <Link href="/dashboard/qr">
+          <Link href="/dashboard/receive">
             <Button
               size="lg"
               className="w-full h-24 flex flex-col gap-2 bg-card hover:bg-muted text-foreground border border-border"
               variant="outline"
             >
-              <QrCode className="w-6 h-6" />
-              <span className="font-medium">QR Payment</span>
+              <ArrowDownLeft className="w-6 h-6" />
+              <span className="font-medium">Receive</span>
             </Button>
           </Link>
         </div>
