@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PyLink - Send money to PayPal with crypto",
+  title: "Papaya - Send money to PayPal with crypto",
   description: "Send money to any PayPal account worldwide, instantly. No PayPal account needed.",
 };
 

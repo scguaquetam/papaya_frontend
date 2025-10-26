@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowLeft, Mail, DollarSign, CreditCard, Wallet, User, Search, Loader2, CheckCircle } from "lucide-react"
+import { ArrowLeft, Mail, DollarSign, CreditCard, Wallet, User, Search, Loader2, CheckCircle, Clock, Info } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import ProtectedRoute from "@/components/ProtectedRoute"
@@ -18,9 +18,9 @@ import { CONTRACTS, CLIENT_ABI, ERC20_ABI, PAYMENT_TOKENS } from "@/lib/contract
 export default function SendMoneyPage() {
   const router = useRouter()
   const [step, setStep] = useState(1)
-  const [recipientType, setRecipientType] = useState<"paypal" | "pylink">("pylink")
+  const [recipientType, setRecipientType] = useState<"paypal" | "wallet">("wallet")
   const [email, setEmail] = useState("")
-  const [pylinkUsername, setPylinkUsername] = useState("")
+  const [recipientAddress, setRecipientAddress] = useState("")
   const [amount, setAmount] = useState("")
   const [paymentMethod, setPaymentMethod] = useState<"apple-pay" | "crypto" | null>(null)
   const [selectedToken, setSelectedToken] = useState<string>(PAYMENT_TOKENS[0].address)
@@ -44,13 +44,18 @@ export default function SendMoneyPage() {
   })
 
   const handleNext = () => {
-    if (step === 1 && (email || pylinkUsername)) {
+    if (step === 1 && (email || recipientAddress)) {
       setStep(2)
     } else if (step === 2 && amount) {
       setStep(3)
     } else if (step === 3 && paymentMethod) {
       setStep(4)
     }
+  }
+
+  // Validate Ethereum address
+  const isValidAddress = (address: string): boolean => {
+    return /^0x[a-fA-F0-9]{40}$/.test(address)
   }
 
   const handlePaymentConfirm = () => {
@@ -102,7 +107,7 @@ export default function SendMoneyPage() {
           amount: amountInWei.toString(),
           payee: payeeAddress,
           connectedWallet: address,
-          recipient: recipientType === 'paypal' ? email : `@${pylinkUsername}`,
+          recipient: recipientType === 'paypal' ? email : recipientAddress,
           value: amountInWei.toString()
         });
         
@@ -138,7 +143,7 @@ export default function SendMoneyPage() {
             amount: amountInWei.toString(),
             payee: payeeAddress,
             connectedWallet: address,
-            recipient: recipientType === 'paypal' ? email : `@${pylinkUsername}`
+            recipient: recipientType === 'paypal' ? email : recipientAddress
           });
           
           // Call pay function with approved tokens
@@ -188,7 +193,7 @@ export default function SendMoneyPage() {
       if (recipientType === "paypal") {
         return !email || !email.includes("@")
       } else {
-        return !pylinkUsername || pylinkUsername.length < 3
+        return !recipientAddress || !isValidAddress(recipientAddress)
       }
     }
     if (step === 2) return !amount || Number.parseFloat(amount) <= 0
@@ -197,7 +202,9 @@ export default function SendMoneyPage() {
   }
 
   const getRecipientDisplay = () => {
-    return recipientType === "paypal" ? email : `@${pylinkUsername}`
+    if (recipientType === "paypal") return email
+    // Shorten address for display
+    return `${recipientAddress.slice(0, 6)}...${recipientAddress.slice(-4)}`
   }
 
   const getTotalAmount = () => {
@@ -249,54 +256,73 @@ export default function SendMoneyPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <User className="w-5 h-5" />
+                <Wallet className="w-5 h-5" />
                 Send Money To
               </CardTitle>
-              <CardDescription>Choose who you want to send money to</CardDescription>
+              <CardDescription>Enter recipient wallet address or PayPal email</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Tabs value={recipientType} onValueChange={(v) => setRecipientType(v as "paypal" | "pylink")}>
+              <Tabs value={recipientType} onValueChange={(v) => setRecipientType(v as "paypal" | "wallet")}>
                 <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="pylink">PyLink User</TabsTrigger>
+                  <TabsTrigger value="wallet">Wallet Address</TabsTrigger>
                   <TabsTrigger value="paypal">PayPal Account</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="pylink" className="space-y-4 mt-4">
+                <TabsContent value="wallet" className="space-y-4 mt-4">
                   <div className="space-y-2">
-                    <Label htmlFor="username">PyLink Username</Label>
+                    <Label htmlFor="address">Recipient Wallet Address</Label>
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Wallet className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <Input
-                        id="username"
+                        id="address"
                         type="text"
-                        placeholder="username"
-                        value={pylinkUsername}
-                        onChange={(e) => setPylinkUsername(e.target.value.replace("@", ""))}
-                        className="text-base pl-10"
+                        placeholder="0x..."
+                        value={recipientAddress}
+                        onChange={(e) => setRecipientAddress(e.target.value.trim())}
+                        className="text-base pl-10 font-mono text-sm"
                       />
                     </div>
-                    <p className="text-xs text-muted-foreground">Enter the PyLink username without the @ symbol</p>
+                    <p className="text-xs text-muted-foreground">
+                      {recipientAddress && !isValidAddress(recipientAddress) && recipientAddress.length > 0
+                        ? "⚠️ Invalid Ethereum address"
+                        : "Enter a valid Ethereum wallet address (0x...)"}
+                    </p>
                   </div>
 
-                  {pylinkUsername.length >= 2 && (
+                  {/* Suggested Contacts */}
+                  <div className="space-y-2">
+                    <Label className="text-xs text-muted-foreground">Quick Select Contacts</Label>
                     <div className="border border-border rounded-lg divide-y divide-border">
                       {[
-                        { username: pylinkUsername, name: "John Doe", verified: true },
-                        { username: `${pylinkUsername}123`, name: "Jane Smith", verified: false },
+                        { 
+                          address: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0", 
+                          name: "Alice Johnson", 
+                          verified: true 
+                        },
+                        { 
+                          address: "0x1234567890123456789012345678901234567890", 
+                          name: "Bob Smith", 
+                          verified: true 
+                        },
+                        { 
+                          address: "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd", 
+                          name: "Charlie Davis", 
+                          verified: false 
+                        },
                       ].map((user, idx) => (
                         <button
                           key={idx}
-                          onClick={() => setPylinkUsername(user.username)}
+                          onClick={() => setRecipientAddress(user.address)}
                           className="w-full p-3 hover:bg-muted transition-colors text-left flex items-center gap-3"
                         >
                           <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold">
                             {user.name.charAt(0)}
                           </div>
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <p className="font-medium text-sm">@{user.username}</p>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <p className="font-medium text-sm">{user.name}</p>
                               {user.verified && (
-                                <svg className="w-4 h-4 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                <svg className="w-4 h-4 text-primary flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                   <path
                                     fillRule="evenodd"
                                     d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -305,17 +331,39 @@ export default function SendMoneyPage() {
                                 </svg>
                               )}
                             </div>
-                            <p className="text-xs text-muted-foreground">{user.name}</p>
+                            <p className="text-xs text-muted-foreground font-mono truncate">{user.address}</p>
                           </div>
                         </button>
                       ))}
                     </div>
-                  )}
+                  </div>
                 </TabsContent>
 
                 <TabsContent value="paypal" className="space-y-4 mt-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">PayPal Email Address</Label>
+                  {/* Coming Soon Banner */}
+                  <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                        <Clock className="w-5 h-5 text-primary" />
+                      </div>
+                      <div className="flex-1 space-y-1">
+                        <h4 className="font-semibold text-sm flex items-center gap-2">
+                          Coming Soon
+                          <span className="px-2 py-0.5 bg-primary/20 text-primary text-xs rounded-full font-medium">
+                            Beta
+                          </span>
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          Integration is currently in development. Will be available in a future update!
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 opacity-50">
+                    <Label htmlFor="email" className="flex items-center gap-2">
+                      PayPal Email Address
+                    </Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                       <Input
@@ -324,10 +372,14 @@ export default function SendMoneyPage() {
                         placeholder="recipient@paypal.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="text-base pl-10"
+                        className="text-base pl-10 cursor-not-allowed"
+                        disabled
                       />
                     </div>
-                    <p className="text-xs text-muted-foreground">The recipient doesn't need a PyLink account</p>
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Info className="w-3 h-3" />
+                      This feature will be available in a future update
+                    </p>
                   </div>
                 </TabsContent>
               </Tabs>
@@ -388,7 +440,7 @@ export default function SendMoneyPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">
-                      Fee {recipientType === "paypal" ? "(2%)" : "(0% - PyLink)"}
+                      Fee {recipientType === "paypal" ? "(2%)" : "(0% - Wallet)"}
                     </span>
                     <span className="font-medium">
                       ${recipientType === "paypal" ? (Number.parseFloat(amount) * 0.02).toFixed(2) : "0.00"}
@@ -398,8 +450,8 @@ export default function SendMoneyPage() {
                     <span className="font-semibold">Total</span>
                     <span className="font-semibold">${getTotalAmount()}</span>
                   </div>
-                  {recipientType === "pylink" && (
-                    <p className="text-xs text-accent pt-2">No fees for PyLink-to-PyLink transfers!</p>
+                  {recipientType === "wallet" && (
+                    <p className="text-xs text-accent pt-2">No fees for wallet-to-wallet transfers!</p>
                   )}
                 </div>
               )}
@@ -518,12 +570,12 @@ export default function SendMoneyPage() {
                 <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Recipient</h3>
                 <div className="flex items-center gap-3 p-4 bg-muted rounded-lg">
                   <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-semibold text-lg">
-                    {recipientType === "pylink" ? "@" : <Mail className="w-6 h-6" />}
+                    {recipientType === "wallet" ? <Wallet className="w-6 h-6" /> : <Mail className="w-6 h-6" />}
                   </div>
                   <div className="flex-1">
                     <p className="font-semibold">{getRecipientDisplay()}</p>
                     <p className="text-sm text-muted-foreground">
-                      {recipientType === "paypal" ? "PayPal Account" : "PyLink User"}
+                      {recipientType === "paypal" ? "PayPal Account" : "Wallet Address"}
                     </p>
                   </div>
                 </div>
@@ -581,7 +633,7 @@ export default function SendMoneyPage() {
               </div>
 
               {/* Rewards Info */}
-              {recipientType === "pylink" && (
+              {recipientType === "wallet" && (
                 <div className="bg-accent/10 border border-accent/20 p-4 rounded-lg">
                   <p className="text-sm text-accent font-medium">
                     You'll earn ${(Number.parseFloat(amount) * 0.01).toFixed(2)} in rewards for this transaction!

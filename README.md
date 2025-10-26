@@ -1,6 +1,6 @@
-# PyLink - Send money to PayPal with Crypto 💸
+# Papaya - Send money to PayPal with Crypto 💸
 
-PyLink is a Next.js application that allows users to send money to any PayPal account worldwide using cryptocurrency or Apple Pay. Built for EthOnline 2025 Hackathon.
+Papaya is a Next.js application that allows users to send money to any PayPal account worldwide using cryptocurrency or Apple Pay. Built for EthOnline 2025 Hackathon.
 
 ## ✨ Features
 
