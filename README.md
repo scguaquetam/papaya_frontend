@@ -121,6 +121,7 @@ It uses also Reown SDK for wallet management, and smart wallet infra, with the c
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Contracts
+![Contracts](https://github.com/JMSBPP/papaya-contracts)
 ## Deployed Contracts (Sepolia)
 
 | Contract | Address | SepoliaScan |
