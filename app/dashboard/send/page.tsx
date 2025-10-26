@@ -16,6 +16,7 @@ import ApplePayButton from "@/components/Applepay/ApplePayButton"
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useReadContract } from "wagmi"
 import { parseUnits } from "viem"
 import { CONTRACTS, CLIENT_ABI, ERC20_ABI, PAYMENT_TOKENS } from "@/lib/contracts"
+import Link from "next/link"
 
 export default function SendMoneyPage() {
   const router = useRouter()
@@ -229,9 +230,11 @@ export default function SendMoneyPage() {
       {/* Header */}
       <header className="border-b border-border bg-card">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
+        <Link href="/dashboard">
           <Button variant="ghost" size="icon" onClick={handleBack} disabled={step === 1}>
             <ArrowLeft className="w-5 h-5" />
           </Button>
+          </Link>
           <h1 className="text-xl font-bold">Send Money</h1>
         </div>
       </header>
