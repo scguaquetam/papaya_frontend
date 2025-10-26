@@ -8,9 +8,11 @@ import ApplePayButton from "@/components/Applepay/ApplePayButton"
 import WalletInfo from "@/components/WalletInfo"
 import ProtectedRoute from "@/components/ProtectedRoute"
 import { useState } from "react"
+import { useAccount } from "wagmi"
 
 export default function DashboardPage() {
   const [paymentStatus, setPaymentStatus] = useState<string>('');
+  const { address, isConnected } = useAccount();
 
 
   const handlePaymentSuccess = (response: PaymentResponse) => {
@@ -27,21 +29,19 @@ export default function DashboardPage() {
     <ProtectedRoute requireWallet={true}>
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-card">
+      {/* <header className="border-b border-border bg-card">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-xl font-bold">PyLink</h1>
-          <Button variant="ghost" size="icon">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
-          </Button>
+          <div className="flex items-center gap-2">
+            {isConnected && address && (
+              <div className="text-xs text-muted-foreground hidden sm:block">
+                {address.slice(0, 6)}...{address.slice(-4)}
+              </div>
+            )}
+            <WalletButton />
+          </div>
         </div>
-      </header>
+      </header> */}
 
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
         {/* Wallet Info */}

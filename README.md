@@ -62,8 +62,6 @@ For detailed instructions, see [REOWN_SETUP.md](./REOWN_SETUP.md).
 The application supports the following networks:
 - Ethereum Mainnet
 - Arbitrum
-- Base
-- Polygon
 
 You can modify the supported networks in `config/index.tsx`.
 
