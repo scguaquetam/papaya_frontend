@@ -106,7 +106,7 @@ Papaya is built with Next.js, TypeScript, and Reown AppKit, using Hardhat, Pyth 
 It is a dApp created on Next JS, using Apple Pay - Payment Request API, for managing apple pay payments for sending PYUSD to other users.
 It uses also Reown SDK for wallet management, and smart wallet infra, with the capability of using social login.
 
-![HowItWorks](https://i.postimg.cc/7Z9NQpzP/Whats-App-Image-2025-10-15-at-14-50-44.jpg) 
+ 
 
  ## Features
 
